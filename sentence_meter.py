@@ -5,6 +5,7 @@
  divides the plain text into sentences, and outputs a graph.
  By Andreas Dittrich, 2017
 """
+
 import re,textwrap
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
@@ -50,35 +51,28 @@ def splitter(text):
     return sentences
 
 def printlongest(sentences):
+    longest= max(sentences, key=len)
     print( "~" * 57)
-    print( "Longest sentence ("+str(len(sentences))+" words):" )
-    print( textwrap.fill( max(sentences, key=len) , width=57, subsequent_indent="   ") )
+    print( "Longest sentence ("+str(len(longest.split()))+" words):" )
+    print( textwrap.fill( longest , width=57, subsequent_indent="   ") )
     print( "~" * 57)
 
 def printgraph(sentences,filename):
     """ print graph """
     x=range(0,len(sentences))
-    y=[len(l) for l in sentences]
+    y=[len(s.split()) for s in sentences]
     plt.title(re.split("/",filename)[-1])
-    plt.plot(x,y)
+    plt.ylabel("words")
+    # plt.plot(y) # line plot
+    plt.bar(x,y) # bar plot
     plt.show()
 
 def showsentences(sentences):
     for s in sentences:
         print("- ", s)
 
-def main(filename, choice):
-    sentences=splitter( readingtext(filename) )
-    if choice=="1":
-        printgraph(    sentences , filename)
-    if choice=="2":
-        printlongest(  sentences )
-    if choice=="3":
-        showsentences( sentences )
-
-
-# Print menu
 def print_menu():
+    """ Menu """
     print( 20 * "~" , " SENCTENCE METER " , 20 * "~")
     print( "0. Enter other filename / path" )
     print( "1. print graph of sentence lengths")
@@ -86,19 +80,25 @@ def print_menu():
     print( "3. print all sentences")
     print( "4. exit")
     print( 57 * "~")
+
+
+######################################################################
+## MAIN
 filename=input("Please enter filename or path to file: ")
+sentences=splitter( readingtext(filename) )
 loop=True
 while loop:
     print_menu()
     choice = input("Enter your choice [0-4]: ")
     if choice=="0":
         filename=input("Please enter filename or path to file: ")
+        sentences=splitter( readingtext(filename) )
     if choice=="1":
-        main(filename, "1")
+        printgraph(sentences, filename)
     if choice=="2":
-        main(filename, "2")
+        printlongest(sentences)
     if choice=="3":
-        main(filename, "3")
+        showsentences(sentences)
     elif choice=="4" or choice=="x" or choice=="q":
         loop=False
     else:
