@@ -5,7 +5,7 @@
  divides the plain text into sentences, and outputs a graph.
  By Andreas Dittrich, 2017
 """
-import re
+import re,textwrap
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 
@@ -50,12 +50,16 @@ def splitter(text):
     return sentences
 
 def printlongest(sentences):
-    print( max(sentences, key=len) )
+    print( "~" * 57)
+    print( "Longest sentence ("+str(len(sentences))+" words):" )
+    print( textwrap.fill( max(sentences, key=len) , width=57, subsequent_indent="   ") )
+    print( "~" * 57)
 
-def printgraph(sentences):
+def printgraph(sentences,filename):
     """ print graph """
     x=range(0,len(sentences))
     y=[len(l) for l in sentences]
+    plt.title(re.split("/",filename)[-1])
     plt.plot(x,y)
     plt.show()
 
@@ -66,7 +70,7 @@ def showsentences(sentences):
 def main(filename, choice):
     sentences=splitter( readingtext(filename) )
     if choice=="1":
-        printgraph(    sentences )
+        printgraph(    sentences , filename)
     if choice=="2":
         printlongest(  sentences )
     if choice=="3":
